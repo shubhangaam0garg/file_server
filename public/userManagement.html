@@ -7,18 +7,31 @@
 <link rel="stylesheet" href="/style.css">
 
 </head>
+<script>
+  function check() {
+    var input = document.getElementById('confirmPassword');
+    if (input.value != document.getElementById('password').value) {
+        input.setCustomValidity('Password Must be Matching.');
+    } else {
+        // input is valid -- reset the error message
+        input.setCustomValidity('');
+    }
+}
+  </script>
 <body>
 <!-- partial:index.partial.html -->
+
 
 <div id="login-form-wrap">
   
   <img src="/logo.png" alt="Trulli" width="100" height="100">
-  <h2>DESIDOC File Server</h2>
-  <form id="login-form" action="/usersManagement" method="post">
+  <h2>DESIDOC File Server</h2> 
+  <h3>New User Registration</h3>
+  <form id="login-form" action="/registerUser" method="post">
     <p>
       <label for="labs">Select Lab :</label>
 
-      <select name="labs" id="labs">
+      <select name="labs" id="labs" required>
         <option value="DESIDOC">DESIDOC</option>
         <option value="LRDE">LRDE</option>
         <option value="DLRL">DLRL</option>
@@ -29,17 +42,20 @@
     <input type="text" id="username" name="username" placeholder="Username" required><i class="validation"><span></span><span></span></i>
     </p>
     <p>
+      <input type="email" id="email" name="email" placeholder="Email" required><i class="validation"><span></span><span></span></i>
+      </p>
+    <p>
     <input type="password" id="password" name="password" placeholder="Password" required><i class="validation"><span></span><span></span></i>
     </p>
     <p>
-    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required><i class="validation"><span></span><span></span></i>
+    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required oninput="check()"><i class="validation"><span></span><span></span></i>
     </p>
     <p>
     <input type="submit" id="login" value="Create User">
     </p>
   </form>
   <div id="create-account-wrap">
-    <p>Maintained and Developed by DESIDOC<p>
+    <p>Developed and by Maintained DESIDOC</p>
   </div><!--create-account-wrap-->
 </div><!--login-form-wrap-->
 <!-- partial -->

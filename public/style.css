@@ -74,6 +74,17 @@ input {
   border-radius: 4px;
 }
 
+input[id = "logout"]{
+  display: block;
+  box-sizing: border-box;
+  width: 10%;
+  outline: none;
+  margin-left: 90%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 4px;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"] {

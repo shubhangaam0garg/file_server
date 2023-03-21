@@ -78,17 +78,17 @@ app.post("/registerUser", urlencodedParser, async (req, res) => {
     let foundUser = users.find((data) => req.body.username === data.username);
     if (!foundUser) {
 
-      let hashPassword = await encryptor.hash(req.body.password, 10);
+      salt = '$2b$10$X4kv7j5ZcG39WgogSl16au'
+      let hashPassword = await encryptor.hash(req.body.password, salt);
 
       let newUser = {
         id: Date.now(),
         username: req.body.username,
-        email: req.body.email,
         lab: req.body.labs,
         password: hashPassword,
       };
       users.push(newUser);
-      fs.writeFileSync('users.json', JSON.stringify(users));
+      fs.writeFileSync('./data/users.json', JSON.stringify(users));
       console.log('User list', users);
       res.sendFile(__dirname + "/public/registrationSuccess.html");
     } else {
@@ -183,7 +183,13 @@ app.get("/images/:file", function (req, res) {
   }
 });
 
+app.post("/logout", urlencodedParser, function(req,res){
+  res.cookie("token", "", { maxAge: 0, httpOnly: true });
+  res.redirect("/");
+});
+
 
 app.listen(port, () => {
   console.log("Server started, listening on Port 8080")
+  console.log(users)
 })

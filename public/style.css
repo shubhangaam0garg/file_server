@@ -197,7 +197,7 @@ table {
 }
 
 th {
-  background-color: #FE4902;
+  background-color: #0278fe;
   color: #FFF;
   cursor: pointer;
   padding: 5px 10px;
@@ -273,6 +273,8 @@ table tr td:first-of-type a[href$=".css"] {
 
 /* docs */
 table tr td:first-of-type a[href$=".doc"],
+table tr td:first-of-type a[href$=".pdf"],
+table tr td:first-of-type a[href$=".odt"],
 table tr td:first-of-type a[href$=".docx"],
 table tr td:first-of-type a[href$=".ppt"],
 table tr td:first-of-type a[href$=".pptx"],
@@ -281,6 +283,10 @@ table tr td:first-of-type a[href$=".ppsx"],
 table tr td:first-of-type a[href$=".xls"],
 table tr td:first-of-type a[href$=".xlsx"] {
   background-image: url(./images/office.png)
+}
+
+table tr td:first-of-type a[href$=".pdf"]{
+  background-image: url(./images/pdf.png)
 }
 
 /* videos */
@@ -311,7 +317,8 @@ table tr td:first-of-type a[href$=".php"] {
   background-image: url(./images/php.png);
 }
 
-table tr td:first-of-type a[href$=".js"] {
+table tr td:first-of-type a[href$=".js"],
+table tr td:first-of-type a[href$=".py"]{
   background-image: url(./images/script.png);
 }
 

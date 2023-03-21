@@ -16,6 +16,7 @@ const encryptor = require('bcrypt');
 const fs = require("fs");
 const util = require('./util')
 const cookieParser = require("cookie-parser");
+const pages = require('./pages')
 
 
 
@@ -53,7 +54,11 @@ app.get("/files", function (req, res) {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if(typeof foundUser !== 'undefined'){
         console.log(foundUser);
-        res.sendFile(__dirname + "/public/files.html");
+        let lab = foundUser.lab;
+        let directoryPath = path.join(__dirname,lab);
+        let tableData = util.getFilesTable(directoryPath);
+        res.send(pages.filesPageHeader+pages.fileTableHeader + pages.tableBodyHeader+
+          tableData + pages.tableBodyFooter + pages.fileTableFooter + pages.filePageFooter);
     }else{
       res.redirect("/")
     }
@@ -99,7 +104,14 @@ app.post("/registerUser", urlencodedParser, async (req, res) => {
 
 
 app.get('/userManagement', function (req, res) {
-  res.sendFile(path.join(__dirname, '/public/userManagement.html'));
+  const localHost = "::ffff:127.0.0.1"
+  console.log(req.socket.remoteAddress)
+  if(req.socket.remoteAddress === localHost){
+    res.sendFile(path.join(__dirname, '/public/userManagement.html'));
+  }else{
+    res.sendFile(path.join(__dirname, '/public/accessDenied.html'));
+  }
+  
 });
 
 
@@ -135,6 +147,33 @@ app.post("/login", urlencodedParser, async (req, res) => {
 
 
 
+
+app.get("/download", function(req,res){
+  let token = req.cookies.token;
+  console.log(token);
+  if(typeof token !== 'undefined'){
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if(typeof foundUser !== 'undefined'){
+        let lab = foundUser.lab;
+        let fileName = req.query.file;
+        let filePath = (__dirname+'/'+lab+'/'+fileName);
+        if(util.matchDownlaodFile(filePath)){
+          res.set("Content-Disposition", 'attachment; filename="'+fileName+'"');
+          res.sendFile(filePath);
+        }else{
+          res.sendFile(__dirname + "/public" + "/error404.html");
+        }
+    }else{
+      res.redirect("/")
+    }
+  }else{
+    res.redirect("/")
+  }
+
+})
+
+
+
 app.get("/images/:file", function (req, res) {
   let fileName = req.params.file;
   if (util.matchImageFile(fileName)) {
@@ -147,5 +186,4 @@ app.get("/images/:file", function (req, res) {
 
 app.listen(port, () => {
   console.log("Server started, listening on Port 8080")
-  console.log('User list', users);
 })

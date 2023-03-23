@@ -1,9 +1,9 @@
 const filesPageHeader = '<!doctype html>'+
 '<html>'+
-'<head><meta charset="UTF-8"><link rel="icon" type="image/x-icon" href="/images/logo.ico"> <title>Files : DESIDOC File Server</title>'+
+'<head><meta charset="UTF-8"><link rel="icon" type="image/x-icon" href="/images/logo.ico"> <title>Files : DESIDOC e-Resource Sharing</title>'+
 '<link rel="stylesheet" href="./style.css"></head>'+
 '<body> <div id="container"> <div id="image"><img src="/logo.png" alt="DRDO Logo" width="100" height="100"></div>'+
-'<h2>DESIDOC File server</h2><form id="login-form" action="/logout" method="post"> <input  type="submit" id="logout" value="Logout"></form>';
+'<h2>DESIDOC e-Resource Sharing</h2><form id="login-form" action="/logout" method="post"> <input  type="submit" id="logout" value="Logout"></form>';
 
 const filePageFooter = '</body></html>';
 

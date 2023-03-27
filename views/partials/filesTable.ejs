@@ -1,0 +1,29 @@
+<body>
+    <div id="login-form-wrap">
+        <div id="image"><img src="/logo.png" alt="DRDO Logo" width="100" height="100"></div>
+        <h3>DESIDOC e-Resource Sharing</h3>
+        <h5>Files available to download for <%= user.lab %></h5>
+        <form id="login-form" action="/logout" method="post"> <input type="submit" id="logout" value="Logout"></form>
+        <table class="sortable" id = "filesTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% files.forEach((file) => {%> 
+                    <% console.log(file.fileURL)%>
+                    <tr><td><a href= <%= file.fileURL %>> <%= file.fileName %></a></td> 
+                        <td><%= file.fileType %></td><td><%= file.fileSize %></td></tr>
+                    <% }) %> 
+            </tbody>
+        </table>
+        <div id="create-account-wrap">
+            <p style="color:red;"> Please use Chrome for better expirence</p>
+            <p>Developed and by Maintained DESIDOC</p>
+            
+          </div>
+        </div>
+       

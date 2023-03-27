@@ -27,6 +27,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 port = 8080;
 
 app.use(cookieParser());
+app.set('view engine', 'ejs');
 
 
 
@@ -50,22 +51,23 @@ app.get('/logo.png', function (req, res) {
 app.get("/files", function (req, res) {
   let token = req.cookies.token;
   console.log(token);
-  if(typeof token !== 'undefined'){
+  if (typeof token !== 'undefined') {
     let foundUser = users.find((data) => parseInt(token) === data.id);
-    if(typeof foundUser !== 'undefined'){
-        console.log(foundUser);
-        let lab = foundUser.lab;
-        let directoryPath = path.join(__dirname,lab);
-        let tableData = util.getFilesTable(directoryPath);
-        res.send(pages.filesPageHeader+pages.fileTableHeader + pages.tableBodyHeader+
-          tableData + pages.tableBodyFooter + pages.fileTableFooter + pages.filePageFooter);
-    }else{
+    if (typeof foundUser !== 'undefined') {
+      console.log(foundUser);
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname, lab);
+      let tableData = util.getFilesTable(directoryPath);
+      console.log(tableData);
+      res.send(pages.filesPageHeader + pages.fileTableHeader + pages.tableBodyHeader +
+        tableData + pages.tableBodyFooter + pages.fileTableFooter + pages.filePageFooter);
+    } else {
       res.redirect("/")
     }
-  }else{
+  } else {
     res.redirect("/")
   }
-  
+
 
 });
 
@@ -106,12 +108,12 @@ app.post("/registerUser", urlencodedParser, async (req, res) => {
 app.get('/userManagement', function (req, res) {
   const localHost = "::ffff:127.0.0.1"
   console.log(req.socket.remoteAddress)
-  if(req.socket.remoteAddress === localHost){
+  if (req.socket.remoteAddress === localHost) {
     res.sendFile(path.join(__dirname, '/public/userManagement.html'));
-  }else{
+  } else {
     res.sendFile(path.join(__dirname, '/public/accessDenied.html'));
   }
-  
+
 });
 
 
@@ -128,7 +130,7 @@ app.post("/login", urlencodedParser, async (req, res) => {
       const passwordMatch = await encryptor.compare(submittedPass, storedPass);
       if (passwordMatch) {
         res.cookie("token", foundUser.id, { maxAge: 10000000, httpOnly: true });
-        res.redirect("/files");
+        res.redirect("/filesJS");
       } else {
         res.sendFile(__dirname + "/public" + "/invalidLogin.html");
       }
@@ -148,29 +150,78 @@ app.post("/login", urlencodedParser, async (req, res) => {
 
 
 
-app.get("/download", function(req,res){
+app.get("/download", function (req, res) {
   let token = req.cookies.token;
   console.log(token);
-  if(typeof token !== 'undefined'){
+  if (typeof token !== 'undefined') {
     let foundUser = users.find((data) => parseInt(token) === data.id);
-    if(typeof foundUser !== 'undefined'){
-        let lab = foundUser.lab;
-        let fileName = req.query.file;
-        let filePath = (__dirname+'/'+lab+'/'+fileName);
-        if(util.matchDownlaodFile(filePath)){
-          res.set("Content-Disposition", 'attachment; filename="'+fileName+'"');
-          res.sendFile(filePath);
-        }else{
-          res.sendFile(__dirname + "/public" + "/error404.html");
-        }
-    }else{
+    if (typeof foundUser !== 'undefined') {
+      let lab = foundUser.lab;
+      let fileName = req.query.file;
+      let filePath = (__dirname + '/' + lab + '/' + fileName);
+      if (util.matchDownlaodFile(filePath)) {
+        res.set("Content-Disposition", 'attachment; filename="' + fileName + '"');
+        res.sendFile(filePath);
+      } else {
+        res.sendFile(__dirname + "/public" + "/error404.html");
+      }
+    } else {
       res.redirect("/")
     }
-  }else{
+  } else {
     res.redirect("/")
   }
 
 })
+
+
+
+app.get("/filesJSON", function (req, res) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (typeof token !== 'undefined') {
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if (typeof foundUser !== 'undefined') {
+      console.log(foundUser);
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname, lab);
+      let tableData = util.getFilesTableJSON(directoryPath);
+      res.json(tableData);
+    } else {
+      res.redirect("/")
+    }
+  } else {
+    res.redirect("/")
+  }
+
+
+});
+
+
+app.get("/filesJS", function (req, res) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (typeof token !== 'undefined') {
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if (typeof foundUser !== 'undefined') {
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname, lab);
+      let tableData = util.getFilesTableJSON(directoryPath);
+      res.render('pages/files', {
+        title: 'Files : DESIDOC e-Resource Sharing',
+        files: tableData,
+        user: foundUser
+      });
+    } else {
+      res.redirect("/")
+    }
+  } else {
+    res.redirect("/")
+  }
+
+
+});
+
 
 
 
@@ -183,7 +234,17 @@ app.get("/images/:file", function (req, res) {
   }
 });
 
-app.post("/logout", urlencodedParser, function(req,res){
+app.get("/js/:file", function (req, res) {
+  let fileName = req.params.file;
+  console.log(fileName);
+  if (util.matchJSFile(fileName)) {
+    res.sendFile(__dirname + "/js/" + fileName);
+  } else {
+    res.sendStatus(404)
+  }
+});
+
+app.post("/logout", urlencodedParser, function (req, res) {
   res.cookie("token", "", { maxAge: 0, httpOnly: true });
   res.redirect("/");
 });

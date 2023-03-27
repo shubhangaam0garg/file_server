@@ -7,6 +7,12 @@ function matchImageFile(filename) {
 
 }
 
+function matchJSFile(filename) {
+    let filePath = __dirname + "/js/" + filename;
+    return fs.existsSync(filePath);
+
+}
+
 function getFilesInDirectory(directoryPath) {
     let files = fs.readdirSync(directoryPath);
     return files;
@@ -66,4 +72,25 @@ function matchDownlaodFile(filePath) {
 
 }
 
-module.exports = { matchImageFile, getFilesTable, matchDownlaodFile }
+function getFilesTableJSON(directoryPath) {
+    let files = getFilesInDirectory(directoryPath);
+    let tableData = '';
+    let filesJSON = [];
+    files.forEach(file => {
+        let fileType = getExtension(file);
+        let fileSize = getFileSize(directoryPath, file);
+        let lastModified = getFileLastModifiedDate(directoryPath, file);
+        let downlaodUrl = getDownloadUrl(file)
+        filesJSON.push({
+            'fileName' : file,
+            'fileURL' : downlaodUrl,
+            'fileSize' : fileSize,
+            'fileTimeStamp' : lastModified,
+            'fileType' : fileType
+        })
+
+    });
+    return filesJSON;
+}
+
+module.exports = { matchImageFile, getFilesTable, matchDownlaodFile, getFilesTableJSON, matchJSFile }

@@ -1,0 +1,25 @@
+<body>
+    <script type="text/javascript" language="javascript">$(document).ready(function () {
+            $('#filesTable').DataTable({
+                language: {
+                    searchPlaceholder: "Search records"
+                }
+            });
+            $('.dataTables_length').addClass('bs-select');
+        });</script>
+    <div id="login-form-wrap">
+        <div id="image"><img src="/logo.png" alt="DRDO Logo" width="100" height="100"></div>
+        <h3>DESIDOC e-Resource Sharing</h3>
+        <h5>Welcome <%= user.username %>
+        </h5>
+        <div id="container">
+            <div id="left"><form id="login-form" action="/upload" method="get"> <input type="submit" id="upload" value="Upload"></form></div>
+            <div id="middle"><form id="login-form" action="/filesJS" method="get"> <input type="submit" id="download" value="Download"></form></div>
+            <div id="right">  <form id="login-form" action="/logout" method="post"> <input type="submit" id="logout1" value="Logout"></form></div>
+        </div>
+        <br>
+        <div id="create-account-wrap">
+            <p style="color:red;"> Please use Chrome for better expirence</p>
+            <p>Developed and by Maintained DESIDOC</p>
+        </div>
+    </div>

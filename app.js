@@ -17,6 +17,7 @@ const fs = require("fs");
 const util = require('./util')
 const cookieParser = require("cookie-parser");
 const pages = require('./pages')
+const multer = require('multer');
 
 
 
@@ -48,19 +49,17 @@ app.get('/logo.png', function (req, res) {
 
 
 
-app.get("/files", function (req, res) {
+
+app.get("/home", function (req, res) {
   let token = req.cookies.token;
   console.log(token);
   if (typeof token !== 'undefined') {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
-      console.log(foundUser);
-      let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname, lab);
-      let tableData = util.getFilesTable(directoryPath);
-      console.log(tableData);
-      res.send(pages.filesPageHeader + pages.fileTableHeader + pages.tableBodyHeader +
-        tableData + pages.tableBodyFooter + pages.fileTableFooter + pages.filePageFooter);
+      res.render('pages/home', {
+        title: 'Home : DESIDOC e-Resource Sharing',
+        user: foundUser
+      });
     } else {
       res.redirect("/")
     }
@@ -102,6 +101,62 @@ app.post("/registerUser", urlencodedParser, async (req, res) => {
 
 });
 
+app.get('/upload', function (req, res) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (typeof token !== 'undefined') {
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if (typeof foundUser !== 'undefined') {
+      res.render("pages/upload",{
+        title : "Upload : DESIDOC e-Resource Sharing",
+        user: foundUser
+      })
+    } else {
+      res.redirect("/")
+    }
+  } else {
+    res.redirect("/")
+  }
+
+});
+
+
+app.post('/uploadFile', function (req, res) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (typeof token !== 'undefined') {
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if (typeof foundUser !== 'undefined') {
+      console.log(foundUser);
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname,"uploads", lab);
+      var storage = multer.diskStorage({
+        destination: function (req, file, callback) {
+          fs.mkdirSync(directoryPath, { recursive: true })
+          callback(null, directoryPath);
+        },
+        filename: function (req, file, callback) {
+          callback(null, file.originalname);
+        }
+      });
+      var upload = multer({ storage: storage }).any('file');
+      upload(req, res, function (err) {
+        if (err) {
+          console.log(err);
+          return res.end("Error uploading file." + err);
+        }
+        res.redirect("/uploadedFiles");
+      });
+    } else {
+      res.redirect("/")
+    }
+  } else {
+    res.redirect("/")
+  }
+  
+
+});
+
 
 
 
@@ -130,7 +185,7 @@ app.post("/login", urlencodedParser, async (req, res) => {
       const passwordMatch = await encryptor.compare(submittedPass, storedPass);
       if (passwordMatch) {
         res.cookie("token", foundUser.id, { maxAge: 10000000, httpOnly: true });
-        res.redirect("/filesJS");
+        res.redirect("/home");
       } else {
         res.sendFile(__dirname + "/public" + "/invalidLogin.html");
       }
@@ -209,6 +264,30 @@ app.get("/filesJS", function (req, res) {
       let tableData = util.getFilesTableJSON(directoryPath);
       res.render('pages/files', {
         title: 'Files : DESIDOC e-Resource Sharing',
+        files: tableData,
+        user: foundUser
+      });
+    } else {
+      res.redirect("/")
+    }
+  } else {
+    res.redirect("/")
+  }
+
+
+});
+
+app.get("/uploadedFiles", function (req, res) {
+  let token = req.cookies.token;
+  console.log(token);
+  if (typeof token !== 'undefined') {
+    let foundUser = users.find((data) => parseInt(token) === data.id);
+    if (typeof foundUser !== 'undefined') {
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname,"uploads", lab);
+      let tableData = util.getFilesTableJSON(directoryPath);
+      res.render('pages/uploadedFiles', {
+        title: 'Uploads : DESIDOC e-Resource Sharing',
         files: tableData,
         user: foundUser
       });

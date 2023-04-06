@@ -1,3 +1,5 @@
+
+
 body {
   background-color: #9f9da7;
   font-size: 1.6rem;
@@ -5,7 +7,10 @@ body {
   color: #2b3e51;
 }
 
-h2,h3,h4,h5 {
+h2,
+h3,
+h4,
+h5 {
   font-weight: 300;
   text-align: center;
 }
@@ -23,7 +28,7 @@ label {
   position: relative;
 }
 
-div[id = "image"] {
+div[id="image"] {
   display: flex;
   justify-content: center;
   padding: 5px;
@@ -38,16 +43,94 @@ a:active {
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
 }
-a:focus, a:hover,
+
+a:focus,
+a:hover,
 a:link:focus,
 a:link:hover,
 a:visited:focus,
 a:visited:hover,
 a:active:focus,
 a:active:hover {
-  color:  #0f618d;
+  color: #0f618d;
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
+}
+
+.paginate_button {
+
+  top: 50%;
+  background-color: #0f618d;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 1px;
+  margin: 2px;
+
+
+}
+
+
+/* CSS */
+.paginate_button {
+  background-color: #e1ecf4;
+  border-radius: 3px;
+  border: 1px solid #7aa7c7;
+  box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #39739d;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px .8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.paginate_button:hover,
+.paginate_button:focus {
+  background-color: #b3d3ea;
+  color: #2c5777;
+}
+
+.paginate_button:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+}
+
+.paginate_button:active {
+  background-color: #a0c7e4;
+  box-shadow: none;
+  color: #2c5777;
+}
+
+.dataTables_info {
+  font-family: monospace;
+  letter-spacing: .17em;
+  margin: 0 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: .17em solid pink;
+  animation: typing 3.5s steps(30, end), blinking-cursor .5s step-end infinite;
+  font-size: medium;
+}
+
+.dataTables_filter {
+  display: inline;
+}
+
+label {
+  display: inline;
 }
 
 #login-form-wrap {
@@ -61,7 +144,34 @@ a:active:hover {
 }
 
 #login-form {
-  padding: 0 60px;
+  padding: 0 50px;
+}
+
+#container {
+  height: 100%;
+  width: 100%;
+  font-size: 0;
+}
+
+#left,
+#middle,
+#right {
+  display: inline-block;
+  zoom: 1;
+  vertical-align: top;
+  font-size: 10px;
+}
+
+#left {
+  width: 33%;
+}
+
+#middle {
+  width: 33%;
+}
+
+#right {
+  width: 33%;
 }
 
 input {
@@ -74,17 +184,27 @@ input {
   border-radius: 4px;
 }
 
-input[id = "logout"]{
+input[id="logout"] {
   display: block;
   box-sizing: border-box;
   width: 25%;
   outline: none;
-  margin-left: 85%;
+  margin-left: 80%;
   height: 40px;
   line-height: 40px;
   border-radius: 4px;
   text-align: center;
-  
+
+}
+
+input[type="search"] {
+  display: block;
+  box-sizing: border-box;
+  outline: none;
+  height: 45px;
+  line-height: 60px;
+  border-radius: 4px;
+  margin: 2px, 2px, 2px, 2px;
 }
 
 input[type="text"],
@@ -98,55 +218,61 @@ input[type="email"] {
   font-style: normal;
   font-size: 16px;
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   position: relative;
   display: inline-block;
   background: none;
 }
+
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus {
   border-color: #3ca9e2;
 }
+
 input[type="text"]:focus:invalid,
 input[type="password"]:focus:invalid,
 input[type="email"]:focus:invalid {
   color: #cc1e2b;
   border-color: #cc1e2b;
 }
-input[type="text"]:valid ~ .validation,
-input[type="password"]:valid ~ .validation,
-input[type="email"]:valid ~ .validation {
+
+input[type="text"]:valid~.validation,
+input[type="password"]:valid~.validation,
+input[type="email"]:valid~.validation {
   display: block;
   border-color: #0C0;
 }
-input[type="text"]:valid ~ .validation span,
-input[type="password"]:valid ~ .validation span,
-input[type="email"]:valid ~ .validation span {
+
+input[type="text"]:valid~.validation span,
+input[type="password"]:valid~.validation span,
+input[type="email"]:valid~.validation span {
   background: #0C0;
   position: absolute;
   border-radius: 6px;
 }
-input[type="text"]:valid ~ .validation span:first-child,
-input[type="password"]:valid ~ .validation span:first-child,
-input[type="email"]:valid ~ .validation span:first-child {
+
+input[type="text"]:valid~.validation span:first-child,
+input[type="password"]:valid~.validation span:first-child,
+input[type="email"]:valid~.validation span:first-child {
   top: 30px;
   left: 14px;
   width: 20px;
   height: 3px;
   -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
-input[type="text"]:valid ~ .validation span:last-child,
-input[type="password"]:valid ~ .validation span:last-child,
-input[type="email"]:valid ~ .validation span:last-child {
+
+input[type="text"]:valid~.validation span:last-child,
+input[type="password"]:valid~.validation span:last-child,
+input[type="email"]:valid~.validation span:last-child {
   top: 35px;
   left: 8px;
   width: 11px;
   height: 3px;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 
@@ -176,6 +302,7 @@ input[type="submit"] {
   cursor: pointer;
   text-align: center;
 }
+
 input[type="submit"]:hover {
   background-color: #329dd5;
   -webkit-transition: all 0.2s ease;
@@ -190,6 +317,7 @@ input[type="submit"]:hover {
   padding: 10px 0;
   border-radius: 0 0 4px 4px;
 }
+
 h1 {
   text-align: center;
   padding: 20px 0 12px 0;
@@ -197,9 +325,9 @@ h1 {
 }
 
 #container {
-  box-shadow: 0 5px 10px -5px rgba(0,0,0,0.5);
+  box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.5);
   position: relative;
-  background: white; 
+  background: white;
 }
 
 table {
@@ -217,12 +345,13 @@ th {
 }
 
 th small {
-  font-size: 6px; 
+  font-size: 6px;
 }
 
-td, th {
+td,
+th {
   text-align: left;
-  font-size: 18px; 
+  font-size: 18px;
 }
 
 a {
@@ -250,14 +379,14 @@ th:first-of-type {
 
 td:not(:first-of-type) a {
   background-image: none !important;
-} 
+}
 
 tr:nth-of-type(odd) {
   background-color: #E6E6E6;
 }
 
 tr:hover td {
-  background-color:#CACACA;
+  background-color: #CACACA;
 }
 
 tr:hover td a {
@@ -267,10 +396,10 @@ tr:hover td a {
 /* icons for file types (icons by famfamfam) */
 
 /* images */
-table tr td:first-of-type a[href$=".jpg"], 
-table tr td:first-of-type a[href$=".png"], 
-table tr td:first-of-type a[href$=".gif"], 
-table tr td:first-of-type a[href$=".svg"], 
+table tr td:first-of-type a[href$=".jpg"],
+table tr td:first-of-type a[href$=".png"],
+table tr td:first-of-type a[href$=".gif"],
+table tr td:first-of-type a[href$=".svg"],
 table tr td:first-of-type a[href$=".jpeg"] {
   background-image: url(./images/image.png);
 }
@@ -298,23 +427,23 @@ table tr td:first-of-type a[href$=".xlsx"] {
   background-image: url(./images/office.png)
 }
 
-table tr td:first-of-type a[href$=".pdf"]{
+table tr td:first-of-type a[href$=".pdf"] {
   background-image: url(./images/pdf.png)
 }
 
 /* videos */
-table tr td:first-of-type a[href$=".avi"], 
-table tr td:first-of-type a[href$=".wmv"], 
-table tr td:first-of-type a[href$=".mp4"], 
-table tr td:first-of-type a[href$=".mov"], 
+table tr td:first-of-type a[href$=".avi"],
+table tr td:first-of-type a[href$=".wmv"],
+table tr td:first-of-type a[href$=".mp4"],
+table tr td:first-of-type a[href$=".mov"],
 table tr td:first-of-type a[href$=".m4a"] {
   background-image: url(./images/video.png);
 }
 
 /* audio */
-table tr td:first-of-type a[href$=".mp3"], 
-table tr td:first-of-type a[href$=".ogg"], 
-table tr td:first-of-type a[href$=".aac"], 
+table tr td:first-of-type a[href$=".mp3"],
+table tr td:first-of-type a[href$=".ogg"],
+table tr td:first-of-type a[href$=".aac"],
 table tr td:first-of-type a[href$=".wma"] {
   background-image: url(./images/audio.png);
 }
@@ -331,7 +460,7 @@ table tr td:first-of-type a[href$=".php"] {
 }
 
 table tr td:first-of-type a[href$=".js"],
-table tr td:first-of-type a[href$=".py"]{
+table tr td:first-of-type a[href$=".py"] {
   background-image: url(./images/script.png);
 }
 

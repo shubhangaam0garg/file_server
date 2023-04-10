@@ -18,12 +18,9 @@ const util = require('./util')
 const cookieParser = require("cookie-parser");
 const pages = require('./pages')
 const multer = require('multer');
-
-
-
-
+const winston = require('./logger');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
-
+const logger = winston.logger;
 
 port = 8080;
 
@@ -33,12 +30,16 @@ app.set('view engine', 'ejs');
 
 
 app.get('/', function (req, res) {
+  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   res.sendFile(path.join(__dirname, '/public/index.html'));
+  logger.log('info','Login accessed by '+ip);
+
 });
 
 
 app.get('/style.css', function (req, res) {
   res.sendFile(__dirname + "/public" + "/style.css");
+
 });
 
 
@@ -60,6 +61,7 @@ app.get("/home", function (req, res) {
         title: 'Home : DESIDOC e-Resource Sharing',
         user: foundUser
       });
+     
     } else {
       res.redirect("/")
     }
@@ -146,6 +148,7 @@ app.post('/uploadFile', function (req, res) {
           return res.end("Error uploading file." + err);
         }
         res.redirect("/uploadedFiles");
+        logger.log('info', 'File Uploaded by : '+foundUser.username);
       });
     } else {
       res.redirect("/")
@@ -186,8 +189,10 @@ app.post("/login", urlencodedParser, async (req, res) => {
       if (passwordMatch) {
         res.cookie("token", foundUser.id, { maxAge: 10000000, httpOnly: true });
         res.redirect("/home");
+        logger.log('info', 'User : '+foundUser.username +'Logged IN')
       } else {
         res.sendFile(__dirname + "/public" + "/invalidLogin.html");
+        logger.log('info', 'Invalid Password for : '+foundUser.username)
       }
     }
     else {
@@ -196,9 +201,11 @@ app.post("/login", urlencodedParser, async (req, res) => {
       await encryptor.compare(req.body.password, fakePass);
 
       res.sendFile(__dirname + "/public" + "/invalidLogin.html");
+      logger.log('info', 'Invalid UserName : '+req.body.username);
     }
   } catch (err) {
     res.send("Internal server error : " + err);
+    logger.log('err', err)
   }
 });
 
@@ -213,12 +220,14 @@ app.get("/download", function (req, res) {
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
       let fileName = req.query.file;
-      let filePath = (__dirname + '/' + lab + '/' + fileName);
+      let directoryPath = path.join(__dirname, 'files',lab,fileName);
       if (util.matchDownlaodFile(filePath)) {
         res.set("Content-Disposition", 'attachment; filename="' + fileName + '"');
         res.sendFile(filePath);
+        logger.log('info', 'File : '+filePath+ ' downaloaded by '+foundUser.username);
       } else {
         res.sendFile(__dirname + "/public" + "/error404.html");
+        logger.log('info', 'Invalid File request by '+foundUser.username);
       }
     } else {
       res.redirect("/")
@@ -242,6 +251,7 @@ app.get("/filesJSON", function (req, res) {
       let directoryPath = path.join(__dirname, lab);
       let tableData = util.getFilesTableJSON(directoryPath);
       res.json(tableData);
+      logger.log('info', 'File table generated for : '+foundUser.username);
     } else {
       res.redirect("/")
     }
@@ -260,13 +270,14 @@ app.get("/filesJS", function (req, res) {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname, lab);
+      let directoryPath = path.join(__dirname, 'files',lab);
       let tableData = util.getFilesTableJSON(directoryPath);
       res.render('pages/files', {
         title: 'Files : DESIDOC e-Resource Sharing',
         files: tableData,
         user: foundUser
       });
+      logger.log('info', 'File table generated for : '+foundUser.username);
     } else {
       res.redirect("/")
     }
@@ -289,7 +300,8 @@ app.get("/uploadedFiles", function (req, res) {
       res.render('pages/uploadedFiles', {
         title: 'Uploads : DESIDOC e-Resource Sharing',
         files: tableData,
-        user: foundUser
+        user: foundUser,
+        successMessage : "Files Uploaded Successfully"
       });
     } else {
       res.redirect("/")

@@ -12,7 +12,10 @@
         <h3>DESIDOC e-Resource Sharing</h3>
         <h5>Files available to download for <%= user.lab %>
         </h5>
-        <form id="login-form" action="/logout" method="post"> <input type="submit" id="logout" value="Logout"></form>
+        <div id="container">
+            <div id="left"><form id="login-form" action="/upload" method="get"> <input type="submit" id="upload" value="Upload"></form></div>
+            <div id="right">  <form id="login-form" action="/logout" method="post"> <input type="submit" id="logout1" value="Logout"></form></div>
+        </div>
         <table class="sortable" id="filesTable">
             <thead>
                 <tr>

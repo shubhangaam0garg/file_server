@@ -22,7 +22,7 @@ const winston = require('./logger');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const logger = winston.logger;
 
-port = 8000;
+port = 8080;
 
 app.use(cookieParser());
 app.set('view engine', 'ejs');

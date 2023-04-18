@@ -469,3 +469,30 @@ table tr td:first-of-type a[href$=".py"] {
 table tr.dir td:first-of-type a {
   background-image: url(./images/folder.png);
 }
+
+ul {
+  list-style-type: none;
+  margin: auto;
+  padding: 2px;
+  overflow: hidden;
+  background-color: #2c4d5a;
+}
+
+li {
+  float: left;
+}
+
+li a[id ="directory"] {
+  font-size: large;
+  display: block;
+  color: white;
+  text-align: center;
+  margin: auto;
+  padding: 8px 8px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a[id = "directory"]:hover {
+  background-color: #111;
+}

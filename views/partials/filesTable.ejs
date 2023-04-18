@@ -7,13 +7,21 @@
             });
             $('.dataTables_length').addClass('bs-select');
         });</script>
+       
     <div id="login-form-wrap">
         <div id="image"><img src="/logo.png" alt="DRDO Logo" width="100" height="100"></div>
         <h3>DESIDOC e-Resource Sharing</h3>
         <h5>Files available to download for <%= user.lab %>
         </h5>
-         <form id="login-form" action="/logout" method="post"> 
-            <input type="hidden" id="desitnation" name="destination" value = "download" ><input type="submit" id="logout" value="Logout"></form>
+        <ul>
+            <% directories.forEach((directory)=> {%>
+                        <li><a id= "directory" href=  <%=directory.url %>> <%= directory.name %></a></li>
+                    <% }) %>
+            <li style="float:right"> <form id="login-form" action="/logout" method="post"> 
+                <input type="hidden" id="desitnation" name="destination" value = "download" >
+                <input type="submit" id="logout1" value="Logout" style="float:right"></form></li>
+          </ul>
+        
         <table class="sortable" id="filesTable">
             <thead>
                 <tr>

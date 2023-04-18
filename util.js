@@ -18,6 +18,13 @@ function getFilesInDirectory(directoryPath) {
     return files;
 }
 
+function getDirecotiresInDirectory(directoryPath) {
+    let directories = fs.readdirSync(directoryPath, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+    return directories;
+}
+
 function getFilesTable(directoryPath) {
     let files = getFilesInDirectory(directoryPath);
     let tableData = '';
@@ -67,7 +74,10 @@ function getExtension(filename) {
     return ext[ext.length - 1].toUpperCase();
 }
 
-function getDownloadUrl(file) {
+function getDownloadUrl(file, subDirectory) {
+    if(typeof subDirectory !== 'undefined'){
+        
+    }
     const baseUrl = "/downloadFile?";
     let url = baseUrl + 'file=' + file;
     return url;
@@ -79,10 +89,17 @@ function matchDownlaodFile(filePath) {
 
 }
 
-function getFilesTableJSON(directoryPath) {
+function getFilesTableJSON(rootDirectory, subDirectory) {
+    let directoryPath = '';
+    if(typeof subDirectory !== 'undefined'){
+        directoryPath = path.join(__dirname,rootDirectory,subDirectory);
+    }else{
+        directoryPath = path.join(__dirname,rootDirectory);
+    }
     let files = getFilesInDirectory(directoryPath);
     let tableData = '';
     let filesJSON = [];
+
     files.forEach(file => {
         let fileType = getExtension(file);
         let fileSize = getFileSize(directoryPath, file);
@@ -100,4 +117,18 @@ function getFilesTableJSON(directoryPath) {
     return filesJSON;
 }
 
-module.exports = { matchImageFile, getFilesTable, matchDownlaodFile, getFilesTableJSON, matchJSFile }
+function getListedDirecotires(directoryPath){
+    let directories = getDirecotiresInDirectory(directoryPath)
+    let directoriesJSON = [];
+    directories.forEach(directory =>{
+        let url = "/filesJS?directory="+directory;
+        let name = directory;
+        directoriesJSON.push({
+            'url':url,
+            'name':name
+        })
+    })
+    return directoriesJSON
+}
+
+module.exports = { matchImageFile, getFilesTable, matchDownlaodFile, getFilesTableJSON, matchJSFile, getListedDirecotires }

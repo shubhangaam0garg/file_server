@@ -42,22 +42,22 @@ app.get('/logo.png', function (req, res) {
 
 
 
-app.get('/download', function (req, res){
+app.get('/download', function (req, res) {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   res.render('pages/login', {
     title: 'Login : DESIDOC e-Resource Sharing',
     destination: 'download'
   });
-  logger.log('info','Login accessed by '+ip);
+  logger.log('info', 'Login accessed by ' + ip);
 });
 
-app.get('/upload', function (req, res){
+app.get('/upload', function (req, res) {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   res.render('pages/login', {
     title: 'Login : DESIDOC e-Resource Sharing',
     destination: 'upload'
   });
-  logger.log('info','Login accessed by '+ip);
+  logger.log('info', 'Login accessed by ' + ip);
 });
 
 
@@ -96,12 +96,12 @@ app.get('/uploadFiles', function (req, res) {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname,"uploads", lab);
+      let directoryPath = path.join(__dirname, "uploads", lab);
       let tableData = util.getFilesTableJSON(directoryPath);
-      res.render("pages/upload",{
-        title : "Upload : DESIDOC e-Resource Sharing",
+      res.render("pages/upload", {
+        title: "Upload : DESIDOC e-Resource Sharing",
         user: foundUser,
-        successMessage : '',
+        successMessage: '',
         files: tableData
       })
     } else {
@@ -122,7 +122,7 @@ app.post('/uploadFile', function (req, res) {
     if (typeof foundUser !== 'undefined') {
       console.log(foundUser);
       let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname,"uploads", lab);
+      let directoryPath = path.join(__dirname, "uploads", lab);
       var storage = multer.diskStorage({
         destination: function (req, file, callback) {
           fs.mkdirSync(directoryPath, { recursive: true })
@@ -138,15 +138,15 @@ app.post('/uploadFile', function (req, res) {
           console.log(err);
           return res.end("Error uploading file." + err);
         }
-      let tableData = util.getFilesTableJSON(directoryPath);
-      res.render('pages/upload', {
-        title: 'Uploads : DESIDOC e-Resource Sharing',
-        files: tableData,
-        user: foundUser,
-        successMessage : "Files Uploaded Successfully"
-      });
-   
-        logger.log('info', 'File Uploaded by : '+foundUser.username);
+        let tableData = util.getFilesTableJSON(directoryPath);
+        res.render('pages/upload', {
+          title: 'Uploads : DESIDOC e-Resource Sharing',
+          files: tableData,
+          user: foundUser,
+          successMessage: "Files Uploaded Successfully"
+        });
+
+        logger.log('info', 'File Uploaded by : ' + foundUser.username);
       });
     } else {
       res.redirect("/")
@@ -154,7 +154,7 @@ app.post('/uploadFile', function (req, res) {
   } else {
     res.redirect("/")
   }
-  
+
 
 });
 
@@ -184,16 +184,16 @@ app.post("/login", urlencodedParser, async (req, res) => {
       const passwordMatch = await encryptor.compare(submittedPass, storedPass);
       if (passwordMatch) {
         res.cookie("token", foundUser.id, { maxAge: 10000000, httpOnly: true });
-        if(destination == 'download'){
+        if (destination == 'download') {
           res.redirect('/filesJS')
         }
-        if(destination == 'upload'){
+        if (destination == 'upload') {
           res.redirect('/uploadFiles')
         }
-        logger.log('info', 'User : '+foundUser.username +'Logged IN')
+        logger.log('info', 'User : ' + foundUser.username + 'Logged IN')
       } else {
         res.sendFile(__dirname + "/public" + "/invalidLogin.html");
-        logger.log('info', 'Invalid Password for : '+foundUser.username)
+        logger.log('info', 'Invalid Password for : ' + foundUser.username)
       }
     }
     else {
@@ -202,7 +202,7 @@ app.post("/login", urlencodedParser, async (req, res) => {
       await encryptor.compare(req.body.password, fakePass);
 
       res.sendFile(__dirname + "/public" + "/invalidLogin.html");
-      logger.log('info', 'Invalid UserName : '+req.body.username);
+      logger.log('info', 'Invalid UserName : ' + req.body.username);
     }
   } catch (err) {
     res.send("Internal server error : " + err);
@@ -221,14 +221,14 @@ app.get("/downloadFile", function (req, res) {
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
       let fileName = req.query.file;
-      let filePath = path.join(__dirname, 'files',lab,fileName);
+      let filePath = path.join(__dirname, 'files', lab, fileName);
       if (util.matchDownlaodFile(filePath)) {
         res.set("Content-Disposition", 'attachment; filename="' + fileName + '"');
         res.sendFile(filePath);
-        logger.log('info', 'File : '+filePath+ ' downaloaded by '+foundUser.username);
+        logger.log('info', 'File : ' + filePath + ' downaloaded by ' + foundUser.username);
       } else {
         res.sendFile(__dirname + "/public" + "/error404.html");
-        logger.log('info', 'Invalid File request by '+foundUser.username);
+        logger.log('info', 'Invalid File request by ' + foundUser.username);
       }
     } else {
       res.redirect("/")
@@ -252,7 +252,7 @@ app.get("/filesJSON", function (req, res) {
       let directoryPath = path.join(__dirname, lab);
       let tableData = util.getFilesTableJSON(directoryPath);
       res.json(tableData);
-      logger.log('info', 'File table generated for : '+foundUser.username);
+      logger.log('info', 'File table generated for : ' + foundUser.username);
     } else {
       res.redirect("/")
     }
@@ -266,19 +266,28 @@ app.get("/filesJSON", function (req, res) {
 
 app.get("/filesJS", function (req, res) {
   let token = req.cookies.token;
+  let directory = req.query.directory;
   console.log(token);
   if (typeof token !== 'undefined') {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname, 'files',lab);
-      let tableData = util.getFilesTableJSON(directoryPath);
+      let rootDirectory = path.join(__dirname, 'files', lab);
+      let directories = util.getListedDirecotires(rootDirectory)
+      let directoryPath = "";
+      if (typeof directory !== 'undefined') {
+        directoryPath = path.join(__dirname, 'files', lab, directory);
+      } else {
+        directoryPath = path.join(__dirname, 'files', lab);
+      }
+      let tableData = util.getFilesTableJSON(lab, directory);
       res.render('pages/files', {
         title: 'Files : DESIDOC e-Resource Sharing',
         files: tableData,
-        user: foundUser
+        user: foundUser,
+        directories: directories
       });
-      logger.log('info', 'File table generated for : '+foundUser.username);
+      logger.log('info', 'File table generated for : ' + foundUser.username);
     } else {
       res.redirect("/")
     }
@@ -296,13 +305,13 @@ app.get("/uploadedFiles", function (req, res) {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
-      let directoryPath = path.join(__dirname,"uploads", lab);
+      let directoryPath = path.join(__dirname, "uploads", lab);
       let tableData = util.getFilesTableJSON(directoryPath);
       res.render('pages/uploadedFiles', {
         title: 'Uploads : DESIDOC e-Resource Sharing',
         files: tableData,
         user: foundUser,
-        successMessage : "Files Uploaded Successfully"
+        successMessage: "Files Uploaded Successfully"
       });
     } else {
       res.redirect("/")
@@ -339,10 +348,10 @@ app.get("/js/:file", function (req, res) {
 app.post("/logout", urlencodedParser, function (req, res) {
   res.cookie("token", "", { maxAge: 0, httpOnly: true });
   let destination = req.body.destination;
-  if(destination == 'download'){
+  if (destination == 'download') {
     res.redirect('/download')
   }
-  if(destination == 'upload'){
+  if (destination == 'upload') {
     res.redirect('/upload')
   }
 });

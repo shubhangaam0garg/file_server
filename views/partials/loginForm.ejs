@@ -1,0 +1,27 @@
+<body>
+    <!-- Page for user Manage Users-->
+    
+    <div id="login-form-wrap">
+      
+      <img src="/logo.png" alt="DRDO Logo" width="100" height="100">
+      <h2>DESIDOC e-Resource Sharing</h2>
+      
+      <form id="login-form" action="/login" method="post">
+            <p>
+        <input type="text" id="username" name="username" placeholder="Username" required><i class="validation"><span></span><span></span></i>
+        </p>
+        <p>
+        <input type="password" id="password" name="password" placeholder="Password" required><i class="validation"><span></span><span></span></i>
+        </p>
+        <input type="hidden" id="desitnation" name="destination" value = <%= destination %> >
+        <p>
+        <input type="submit" id="login" value="Login">
+        </p>
+      </form>
+      <div id="create-account-wrap">
+        <p style="color:red;"> Please use Chrome for better expirence</p>
+        <p>Developed and by Maintained DESIDOC</p>
+        
+      </div><!--create-account-wrap-->
+    </div><!--login-form-wrap-->
+    <!-- partial -->

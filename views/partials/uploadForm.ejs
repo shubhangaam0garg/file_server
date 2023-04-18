@@ -1,19 +1,60 @@
 <body>
-
+    <script type="text/javascript" language="javascript">$(document).ready(function () {
+            $('#filesTable').DataTable({
+                language: {
+                    searchPlaceholder: "Search records"
+                },
+                order: [[3, 'desc']],
+            });
+            $('.dataTables_length').addClass('bs-select');
+        });</script>
     <div id="login-form-wrap">
 
         <img src="/logo.png" alt="Trulli" width="100" height="100">
         <h2>DESIDOC e-Resource Sharing</h2>
+        <h4 style="color:rgb(48, 196, 48);">
+            <%=successMessage%>
+        </h4>
         <h5>Upload Files</h5>
-        <form id="login-form" action="/logout" method="post"> <input type="submit" id="logout" value="Logout"></form>
-        <form id="login-form" enctype="multipart/form-data" action="/uploadFile" method="post" onsubmit="return showProgress()">
+        <form id="login-form" action="/logout" method="post"> <input type="hidden" id="desitnation" name="destination"
+                value="upload"><input type="submit" id="logout" value="Logout"></form>
+        <form id="login-form" enctype="multipart/form-data" action="/uploadFile" method="post"
+            onsubmit="return showProgress()">
             <input id='files' type="file" name="file" multiple>
             <input type="submit" id="upload" value="Upload">
 
         </form>
         <div id="progress"></div>
         <span id="status"></span>
+        <table class="sortable" id="filesTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Upload Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% files.forEach((file)=> {%>
+                    <% console.log(file.fileURL)%>
+                        <tr>
+                            <td><a href=<%=file.fileURL %>> <%= file.fileName %></a></td>
+                            <td>
+                                <%= file.fileType %>
+                            </td>
+                            <td>
+                                <%= file.fileSize %>
+                            </td>
+                            <td>
+                                <%= file.fileTimeStamp %>
+                            </td>
+                        </tr>
+                        <% }) %>
+            </tbody>
+        </table>
         <div id="create-account-wrap">
+            <p style="color:red;"> Please use Chrome for better expirence</p>
             <p>Developed and by Maintained DESIDOC</p>
         </div><!--create-account-wrap-->
     </div><!--login-form-wrap-->

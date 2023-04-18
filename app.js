@@ -22,19 +22,11 @@ const winston = require('./logger');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const logger = winston.logger;
 
-port = 8080;
+port = 8000;
 
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
-
-
-app.get('/', function (req, res) {
-  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  res.sendFile(path.join(__dirname, '/public/index.html'));
-  logger.log('info','Login accessed by '+ip);
-
-});
 
 
 app.get('/style.css', function (req, res) {
@@ -50,29 +42,23 @@ app.get('/logo.png', function (req, res) {
 
 
 
-
-app.get("/home", function (req, res) {
-  let token = req.cookies.token;
-  console.log(token);
-  if (typeof token !== 'undefined') {
-    let foundUser = users.find((data) => parseInt(token) === data.id);
-    if (typeof foundUser !== 'undefined') {
-      res.render('pages/home', {
-        title: 'Home : DESIDOC e-Resource Sharing',
-        user: foundUser
-      });
-     
-    } else {
-      res.redirect("/")
-    }
-  } else {
-    res.redirect("/")
-  }
-
-
+app.get('/download', function (req, res){
+  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  res.render('pages/login', {
+    title: 'Login : DESIDOC e-Resource Sharing',
+    destination: 'download'
+  });
+  logger.log('info','Login accessed by '+ip);
 });
 
-
+app.get('/upload', function (req, res){
+  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  res.render('pages/login', {
+    title: 'Login : DESIDOC e-Resource Sharing',
+    destination: 'upload'
+  });
+  logger.log('info','Login accessed by '+ip);
+});
 
 
 app.post("/registerUser", urlencodedParser, async (req, res) => {
@@ -103,15 +89,20 @@ app.post("/registerUser", urlencodedParser, async (req, res) => {
 
 });
 
-app.get('/upload', function (req, res) {
+app.get('/uploadFiles', function (req, res) {
   let token = req.cookies.token;
   console.log(token);
   if (typeof token !== 'undefined') {
     let foundUser = users.find((data) => parseInt(token) === data.id);
     if (typeof foundUser !== 'undefined') {
+      let lab = foundUser.lab;
+      let directoryPath = path.join(__dirname,"uploads", lab);
+      let tableData = util.getFilesTableJSON(directoryPath);
       res.render("pages/upload",{
         title : "Upload : DESIDOC e-Resource Sharing",
-        user: foundUser
+        user: foundUser,
+        successMessage : '',
+        files: tableData
       })
     } else {
       res.redirect("/")
@@ -147,7 +138,14 @@ app.post('/uploadFile', function (req, res) {
           console.log(err);
           return res.end("Error uploading file." + err);
         }
-        res.redirect("/uploadedFiles");
+      let tableData = util.getFilesTableJSON(directoryPath);
+      res.render('pages/upload', {
+        title: 'Uploads : DESIDOC e-Resource Sharing',
+        files: tableData,
+        user: foundUser,
+        successMessage : "Files Uploaded Successfully"
+      });
+   
         logger.log('info', 'File Uploaded by : '+foundUser.username);
       });
     } else {
@@ -174,9 +172,6 @@ app.get('/userManagement', function (req, res) {
 
 });
 
-
-
-
 app.post("/login", urlencodedParser, async (req, res) => {
   try {
     let foundUser = users.find((data) => req.body.username === data.username);
@@ -184,11 +179,17 @@ app.post("/login", urlencodedParser, async (req, res) => {
 
       let submittedPass = req.body.password;
       let storedPass = foundUser.password;
+      let destination = req.body.destination;
 
       const passwordMatch = await encryptor.compare(submittedPass, storedPass);
       if (passwordMatch) {
         res.cookie("token", foundUser.id, { maxAge: 10000000, httpOnly: true });
-        res.redirect("/home");
+        if(destination == 'download'){
+          res.redirect('/filesJS')
+        }
+        if(destination == 'upload'){
+          res.redirect('/uploadFiles')
+        }
         logger.log('info', 'User : '+foundUser.username +'Logged IN')
       } else {
         res.sendFile(__dirname + "/public" + "/invalidLogin.html");
@@ -212,7 +213,7 @@ app.post("/login", urlencodedParser, async (req, res) => {
 
 
 
-app.get("/download", function (req, res) {
+app.get("/downloadFile", function (req, res) {
   let token = req.cookies.token;
   console.log(token);
   if (typeof token !== 'undefined') {
@@ -220,7 +221,7 @@ app.get("/download", function (req, res) {
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
       let fileName = req.query.file;
-      let directoryPath = path.join(__dirname, 'files',lab,fileName);
+      let filePath = path.join(__dirname, 'files',lab,fileName);
       if (util.matchDownlaodFile(filePath)) {
         res.set("Content-Disposition", 'attachment; filename="' + fileName + '"');
         res.sendFile(filePath);
@@ -337,7 +338,13 @@ app.get("/js/:file", function (req, res) {
 
 app.post("/logout", urlencodedParser, function (req, res) {
   res.cookie("token", "", { maxAge: 0, httpOnly: true });
-  res.redirect("/");
+  let destination = req.body.destination;
+  if(destination == 'download'){
+    res.redirect('/download')
+  }
+  if(destination == 'upload'){
+    res.redirect('/upload')
+  }
 });
 
 

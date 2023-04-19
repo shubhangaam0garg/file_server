@@ -221,7 +221,14 @@ app.get("/downloadFile", function (req, res) {
     if (typeof foundUser !== 'undefined') {
       let lab = foundUser.lab;
       let fileName = req.query.file;
-      let filePath = path.join(__dirname, 'files', lab, fileName);
+      let directory = req.query.directory;
+      let filePath = '';
+      if(typeof directory !== 'undefined'){
+        filePath = path.join(__dirname, 'files', lab,directory, fileName);
+      }else{
+        filePath = path.join(__dirname, 'files', lab, fileName);
+      }
+     
       if (util.matchDownlaodFile(filePath)) {
         res.set("Content-Disposition", 'attachment; filename="' + fileName + '"');
         res.sendFile(filePath);
@@ -285,7 +292,8 @@ app.get("/filesJS", function (req, res) {
         title: 'Files : DESIDOC e-Resource Sharing',
         files: tableData,
         user: foundUser,
-        directories: directories
+        directories: directories,
+        currentDirectory : directory
       });
       logger.log('info', 'File table generated for : ' + foundUser.username);
     } else {

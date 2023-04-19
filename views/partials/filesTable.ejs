@@ -15,7 +15,9 @@
         </h5>
         <ul>
             <% directories.forEach((directory)=> {%>
-                        <li><a id= "directory" href=  <%=directory.url %>> <%= directory.name %></a></li>
+                        <li><a id= "directory" <% if(currentDirectory == directory.name){%>
+                            class = "active"
+                         <% } %> href=  <%=directory.url %>> <%= directory.name %></a></li>
                     <% }) %>
             <li style="float:right"> <form id="login-form" action="/logout" method="post"> 
                 <input type="hidden" id="desitnation" name="destination" value = "download" >

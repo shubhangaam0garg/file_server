@@ -75,11 +75,14 @@ function getExtension(filename) {
 }
 
 function getDownloadUrl(file, subDirectory) {
-    if(typeof subDirectory !== 'undefined'){
-        
-    }
     const baseUrl = "/downloadFile?";
-    let url = baseUrl + 'file=' + file;
+    let url = '';
+    if(typeof subDirectory !== 'undefined'){
+        url = baseUrl + 'directory=' + subDirectory+ '&file='+file;
+    }else{
+        url = baseUrl + 'file=' + file;
+    }
+  
     return url;
 }
 
@@ -92,9 +95,9 @@ function matchDownlaodFile(filePath) {
 function getFilesTableJSON(rootDirectory, subDirectory) {
     let directoryPath = '';
     if(typeof subDirectory !== 'undefined'){
-        directoryPath = path.join(__dirname,rootDirectory,subDirectory);
+        directoryPath = path.join(__dirname,'files',rootDirectory,subDirectory);
     }else{
-        directoryPath = path.join(__dirname,rootDirectory);
+        directoryPath = path.join(__dirname,'files',rootDirectory);
     }
     let files = getFilesInDirectory(directoryPath);
     let tableData = '';
@@ -104,7 +107,7 @@ function getFilesTableJSON(rootDirectory, subDirectory) {
         let fileType = getExtension(file);
         let fileSize = getFileSize(directoryPath, file);
         let lastModified = getFileLastModifiedDate(directoryPath, file);
-        let downlaodUrl = getDownloadUrl(file)
+        let downlaodUrl = getDownloadUrl(file,subDirectory)
         filesJSON.push({
             'fileName' : file,
             'fileURL' : downlaodUrl,

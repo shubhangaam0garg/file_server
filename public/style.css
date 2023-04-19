@@ -496,3 +496,7 @@ li a[id ="directory"] {
 li a[id = "directory"]:hover {
   background-color: #111;
 }
+
+.active {
+  background-color: #04AA6D;
+}

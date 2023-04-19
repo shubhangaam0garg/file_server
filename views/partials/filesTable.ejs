@@ -19,9 +19,7 @@
                             class = "active"
                          <% } %> href=  <%=directory.url %>> <%= directory.name %></a></li>
                     <% }) %>
-            <li style="float:right"> <form id="login-form" action="/logout" method="post"> 
-                <input type="hidden" id="desitnation" name="destination" value = "download" >
-                <input type="submit" id="logout1" value="Logout" style="float:right"></form></li>
+            <li :last-child style="float:right"> <a id="directory" href = "/logout">Logout</a></li>
           </ul>
         
         <table class="sortable" id="filesTable">

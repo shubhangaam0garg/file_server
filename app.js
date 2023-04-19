@@ -238,10 +238,10 @@ app.get("/downloadFile", function (req, res) {
         logger.log('info', 'Invalid File request by ' + foundUser.username);
       }
     } else {
-      res.redirect("/")
+      res.redirect("/download")
     }
   } else {
-    res.redirect("/")
+    res.redirect("/download")
   }
 
 })
@@ -362,6 +362,11 @@ app.post("/logout", urlencodedParser, function (req, res) {
   if (destination == 'upload') {
     res.redirect('/upload')
   }
+});
+
+app.get("/logout", function (req,res){
+  res.cookie("token", "", { maxAge: 0, httpOnly: true });
+  res.redirect('/download');
 });
 
 

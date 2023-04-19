@@ -14,7 +14,7 @@ function matchJSFile(filename) {
 }
 
 function getFilesInDirectory(directoryPath) {
-    let files = fs.readdirSync(directoryPath);
+    let files = fs.readdirSync(directoryPath, { withFileTypes: true }).filter(dirent => !dirent.isDirectory()) .map(dirent => dirent.name);
     return files;
 }
 
